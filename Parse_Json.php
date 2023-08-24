@@ -3,14 +3,15 @@
 $students_records = file_get_contents('student-scores.json');
 $students_records_de = json_decode($students_records, TRUE);
 $absance_day = 0;
+$math_high = 0;
 $student_details = [];
+$math_highest = [];
 
 //print_r($students_records_de);
 foreach ($students_records_de as $student_record) {
     foreach ($student_record as $key => $value) {
         if ($key == 'id') {
             $id = $value;
-
         } elseif ($key == 'first_name') {
             $first_name = $value;
         } elseif ($key == 'last_name') {
@@ -20,7 +21,7 @@ foreach ($students_records_de as $student_record) {
         } elseif ($key == 'absence_days') {
             if ($value > $absance_day) {
                 $absance_day = $value;
-                $student_details = array(
+                $student_details_absance = array(
                     'id' => $id,
                     'first_name' => $first_name,
                     'last_name' => $last_name,
@@ -28,11 +29,38 @@ foreach ($students_records_de as $student_record) {
                     'absance_day' => $absance_day
                 );
             }
+        } elseif ($key == "math_score") {
+            if ($value > $math_high) {
+                unset($math_highest);
+                $math_high = $value;
+                $student_details_math_high
+                    = array(
+                        'id' => $id,
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'email' => $email,
+                        'maths_marks' => $math_high
+                    );
+            } elseif ($value == $math_high) {
+                $student_details_math_high
+                    = array(
+                        'id' => $id,
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'email' => $email,
+                        'maths_marks' => $math_high
+                    );
+                $math_highest[] = $student_details_math_high;
+            }
         }
     }
-
 }
-print_r(json_encode($student_details));
+//get the most absance student record//
+
+//print_r(json_encode($student_details_absance));
+print_r(json_encode($math_highest));
+
+//
 
 /*$auth_name = [];
 $set = [];
@@ -57,5 +85,3 @@ foreach ($author_names as $name) {
 }
 
 print_r($set);*/
-
-?>
