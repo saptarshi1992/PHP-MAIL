@@ -1,72 +1,43 @@
 <?php
-$jsonData = '[
-  {
-    "name": "Iron Man",
-    "release_date": "2008-05-02",
-    "movie_id": "tt0371746",
-    "rating": 7.9
-  },
-  {
-    "name": "Captain America: The First Avenger",
-    "release_date": "2011-07-22",
-    "movie_id": "tt0458339",
-    "rating": 6.9
-  },
-  {
-    "name": "Ant-Man",
-    "release_date": "2015-07-17",
-    "movie_id": "tt0478970",
-    "rating": 7.3
-  },
-  {
-    "name": "Captain Marvel 2",
-    "release_date": "2022-11-11",
-    "movie_id": "tt10676048",
-    "rating": ""
-  },
-  {
-    "name": "Fantastic Four",
-    "release_date": "",
-    "movie_id": "tt10676052",
-    "rating": ""
-  },
-  {
-    "name": "Untitled Spider-Man: Far From Home sequel",
-    "release_date": "2021-12-17",
-    "movie_id": "tt10872600",
-    "rating": ""
-  },
-  {
-    "name": "Ant-Man and the Wasp: Quantumania",
-    "release_date": "",
-    "movie_id": "tt11213558",
-    "rating": ""
-  }
-]';
-
-$data = json_decode($jsonData, true);
-
-$nameCounts = [];
-$commonTerms = [];
-
-foreach ($data as $entry) {
-    if (isset($entry['name'])) {
-        $name = $entry['name'];
-        $terms = explode(" ", $name);
-        
-        foreach ($terms as $term) {
-            if (strlen($term) > 2) { // Ignore short words like "and", "the", etc.
-                if (!isset($nameCounts[$term])) {
-                    $nameCounts[$term] = 0;
-                }
-                $nameCounts[$term]++;
-                if ($nameCounts[$term] > 1 && !in_array($term, $commonTerms)) {
-                    $commonTerms[] = $term;
-                }
-            }
-        }
+$data_set = file_get_contents('movies.json');
+$data_set = json_decode($data_set, TRUE);
+$movie_info = [];
+$movie_id;
+$count_words = [];
+//FIND OUT DUPLICATE VALUES//
+foreach ($data_set as $data) {
+  //$movie_id = $data['movie_id'];
+  if ($movie_id == $data['movie_id']) {
+    $movie_info[count($movie_info) - 1]['name'] .= $data['name'];
+    $movie_info[count($movie_info) - 1]['release_date'] .= $data['release_date'];
+    $movie_info[count($movie_info) - 1]['rating'] .= $data['rating'];
+  } else {
+    if ($data['release_date'] != NULL && $data['release_date'] <= '2019-01-01' && $data['release_date'] >= '2018-01-01') {
+      $movie_id = $data['movie_id'];
+      $movie_info[] = array(
+        'name' => $data['name'],
+        'release_date' => $data['release_date'],
+        'movie_id' => $data['movie_id'],
+        'rating' => $data['rating']
+      );
     }
+  }
+  // print_r($movie_id);
 }
+//print_r(json_encode($movie_info));
 
-echo "Common terms between movie names: " . implode(", ", $commonTerms);
-?>
+//frquent word in name//
+
+$stopWords = ["a", "an", "and", "the", "is", "of", "with", "for", "in", "to", "as"];
+foreach ($data_set as $data) {
+  $clean_set = explode(' ', $data['name']);
+  foreach ($clean_set as $clean) {
+    if ($clean != empty($clean) && !in_array(strtolower($clean), $stopWords) && !empty($clean) && !is_numeric($clean)) {
+      //print_r($clean);
+      $cleanStr = preg_replace('/[^A-Za-z0-9]/', '', $clean);
+      $count_words[$cleanStr] = isset($count_words[$cleanStr]) ? $count_words[$cleanStr] + 1 : 1;
+    }
+  }
+}
+arsort($count_words);
+print_r(key($count_words));
