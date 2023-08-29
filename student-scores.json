@@ -3,7 +3,7 @@
         "id": 1,
         "first_name": "Paul",
         "last_name": "Casey",
-        "email": "paul.casey.1@gslingacademy.com",
+        "email": "paul.casey.1gslingacademy.com",
         "gender": "male",
         "part_time_job": false,
         "absence_days": 3,
@@ -17,6 +17,7 @@
         "biology_score": 63,
         "english_score": 80,
         "geography_score": 87
+        
     },
     {
         "id": 2,

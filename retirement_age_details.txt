@@ -1,4 +1,0 @@
-Emp_id,Emp_first_name,Emp_last_name, Emp_age
-332569843, George, ODonnell, 77
-546523478, John, Doe, 60
-631231482, David, Smith, 77

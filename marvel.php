@@ -6,6 +6,7 @@ $movie_id;
 $count_words = [];
 $unique_movie_info = [];
 $new_data = [];
+
 //FIND OUT DUPLICATE VALUES//
 
 
@@ -56,16 +57,25 @@ foreach ($movie_info as $key => $value) {
 }
 //print_r($unique_movie_info);
 //sort using rating of this movie json::
+array_multisort(
+  array_column($unique_movie_info, 'rating'),
+  SORT_ASC,
+  array_column($unique_movie_info, 'release_date'),
+  SORT_ASC,
+  $unique_movie_info
+);
 
-usort($unique_movie_info, function($a, $b) {
+
+
+/*usort($unique_movie_info, function($a, $b) {
   return $b['rating'] <=> $a['rating'];
-});
+});*/
 
 //sort using movie titile::
-usort($unique_movie_info, function ($a, $b) {
+/*usort($unique_movie_info, function ($a, $b) {
   return strcmp($b['name'], $a['name']);
 
-});
+});*/
 print_r($unique_movie_info);
 //print_r(json_encode($unique_movie_info));
 /*
